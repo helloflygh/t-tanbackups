@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>T!tan</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+:root {
+  --bg: #ffffff;
+  --card: #ffffff;
+  --accent: #ffffff;
+  --text: #ffffff;
+  --muted: #d3d3d3;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "Segoe UI", sans-serif;
+   background-image: url('https://raw.githubusercontent.com/helloflygh/games/main/IMG_4494.gif');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  color: var(--text);
+  min-height: 100vh;
+}
+
+#loading {
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle, #1a1f3c, #0f1220);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.loader-box {
+  text-align: center;
+}
+
+.loader-box img {
+  width: 90px;
+  height: 90px;
+  margin-bottom: 15px;
+}
+
+.quote {
+  font-style: italic;
+  color: var(--muted);
+}
+
+#app {
+  display: none;
+  padding: 30px;
+  animation: fadeIn 0.8s ease;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 20px;
+  letter-spacing: 1px;
+}
+
+input {
+  width: 100%;
+  max-width: 500px;
+  display: block;
+  margin: 0 auto 25px;
+  padding: 14px 16px;
+  border-radius: 30px;
+  border: none;
+  outline: none;
+  font-size: 16px;
+  background: var(--card);
+  color: #808080;
+}
+
+input:focus {
+  box-shadow: 0 0 0 2px var(--accent);
+}
+
+.section-title {
+  text-align: center;
+  margin: 30px 0 20px;
+  color: var(--accent);
+  letter-spacing: 1px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 25px;
+}
+
+.item {
+  background: var(--card);
+  border-radius: 14px;
+  overflow: hidden;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.item:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 15px 30px rgba(0,0,0,0.4);
+}
+
+.item img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  display: block;
+}
+
+.divider {
+  margin: 50px 0 30px;
+  border-top: 2px solid var(--accent);
+  opacity: 0.4;
+}
+
+.info-section {
+  max-width: 800px;
+  margin: auto;
+  text-align: center;
+}
+
+.info-section h3 {
+  margin-bottom: 10px;
+}
+
+.info-section p {
+  color: var(--muted);
+  line-height: 1.7;
+  font-size: 15px;
+}
+
+#no-results {
+  display: none;
+  grid-column: 1 / -1;
+  text-align: center;
+  margin-top: 40px;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+#notification-ad {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    padding: 8px;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+  }
+
+  #notification-ad img {
+    max-width: 300px;
+    height: auto;
+    border-radius: 6px;
+    display: block;
+  }
+
+  #close-ad {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background: #000;
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    font-size: 14px;
+    line-height: 24px;
+    text-align: center;
+  }
+
+  #close-ad:hover {
+    background: #444;
+  }
+
+</style>
+</head>
+
+<body>
+
+<div id="loading">
+  <div class="loader-box">
+    <img src="https://raw.githubusercontent.com/helloflygh/games/main/copy_FB56A650-849E-4848-89AF-50C81A971AE7.gif">
+    <div class="quote" id="quote"></div>
+  </div>
+</div>
+
+<div id="app">
+  <h1><img src="https://raw.githubusercontent.com/helloflygh/games/main/IMG_4495-removebg-preview.png"></h1>
+
+  <input type="text" placeholder="Search..." id="search" onkeyup="filterImages()">
+
+<div class="info-section">
+    <h2 class="section-title">Version 2.0</h2>
+    <h1>RIP S4turn</h1>
+
+<p>
+ a teacher reported s4turn to the district and now it got taken down, for safety measures I'll make it so people have to request access. I am backing up my website on GitHub. If t!tan goes down i will republish it.
+    </p>
+
+<p>
+ 
+    </p>
+
+<p>
+ 
+    </p>
+
+<p>
+ 
+    </p>
+
+<p>
+Ever since N3bula went down I have set out to make project t!tan, to bring back game websites for everyone.
+    </p>
+
+<h1>PARTNERS</h1>
+    <p>
+      Im exited to announce out partner site, S4turn. S4turn helped me with a lot of things, and I helped them too. I appreciate all the help, thank you!
+
+<h1>Credits</h1>
+    <p>
+    Credit to s4turn for all the help 
+    </p>
+
+
+<h1>Next Update: New Collab Website</h1>
+    <p>
+      this will occur on Wednesday, Jan 14, 2026
+    </p>
+    <h1>Terms of Service</h1>
+    <p>
+      By visiting this site, you agree to our Terms of Service.
+    </p>
+
+
+<h2 class="section-title">CATEGORIES</h2>
+
+  <div class="grid" id="grid">
+
+    <div class="item" data-title="Games">
+      <a href="https://sites.google.com/gse.cusd80.com/titan/page_2" target="_blank">
+        <img src="https://raw.githubusercontent.com/helloflygh/games/main/Screenshot_2026-01-03_6.42.23_PM-removebg-preview.png">
+      </a>
+    </div>
+
+    <div class="item" data-title="Movies">
+      <a href="https://sites.google.com/gse.cusd80.com/titan/page_1" target="_blank">
+        <img src="https://raw.githubusercontent.com/helloflygh/games/main/Screenshot_2026-01-03_6.49.01_PM-removebg-preview.png">
+      </a>
+    </div>
+
+    <div class="item" data-title="Music">
+      <a href="https://sites.google.com/gse.cusd80.com/titan/page_5" target="_blank">
+        <img src="https://raw.githubusercontent.com/helloflygh/games/main/Screenshot_2026-01-03_7.00.08_PM-removebg-preview.png">
+      </a>
+    </div>
+
+    <div class="item" data-title="Soundboard">
+      <a href="https://sites.google.com/gse.cusd80.com/titan/page_4" target="_blank">
+        <img src="https://raw.githubusercontent.com/helloflygh/games/main/Screenshot_2026-01-03_7.05.30_PM-removebg-preview.png">
+      </a>
+    </div>
+
+<div class="item" data-title="Extras">
+      <a href="https://sites.google.com/gse.cusd80.com/titan/page_3" target="_blank">
+        <img src="https://raw.githubusercontent.com/helloflygh/games/main/Screenshot_2026-01-03_7.11.40_PM-removebg-preview.png">
+      </a>
+    </div>
+
+<div class="item" data-title="Proxies">
+      <a href="https://sites.google.com/gse.cusd80.com/titan/page" target="_blank">
+        <img src="https://raw.githubusercontent.com/helloflygh/games/main/Screenshot_2026-01-03_7.38.00_PM-removebg-preview.png">
+      </a>
+    </div>
+
+<div class="item" data-title="Codes">
+      <a href="https://sites.google.com/gse.cusd80.com/titan/codes" target="_blank">
+        <img src="https://raw.githubusercontent.com/helloflygh/games/main/Screenshot_2026-01-03_7.42.22_PM-removebg-preview.png">
+      </a>
+    </div>
+
+
+
+    <div id="no-results">
+      <div class="quote">no results.</div>
+    </div>
+
+  </div>
+
+  <div class="divider"></div>
+
+    <h1> <h1>
+    <h1> <h1>
+    <h1> <h1>
+    <h1> <h1>
+
+</div>
+
+<script>
+const quotes = [
+  "Who actually reads these?",
+  "T!tans way — games for when teachers look away.",
+  "Mateooooooooooooooooooooooooo",
+  "these games are so tuff!",
+  "rip algebra games.",
+  "is n3bula up yet?",
+  "TYSM S4turn <3",
+  "is this update even good ",
+  "Smash down Chez and Doktem! They are low-🔑 buns bro.",
+  "Loading...",
+  "Smash down Chez and Doktem! They are low-🔑 buns bro.",
+  "T!tans way — games for when teachers look away."
+];
+
+document.getElementById("quote").textContent =
+  quotes[Math.floor(Math.random() * quotes.length)];
+
+setTimeout(() => {
+  document.getElementById("loading").style.display = "none";
+  document.getElementById("app").style.display = "block";
+}, 693);
+
+function filterImages() {
+  const q = document.getElementById("search").value.toLowerCase();
+  const items = document.querySelectorAll(".item");
+  const noResults = document.getElementById("no-results");
+  let matches = 0;
+
+  items.forEach(item => {
+    const title = item.dataset.title.toLowerCase();
+    if (title.includes(q)) {
+      item.style.display = "block";
+      matches++;
+    } else {
+      item.style.display = "none";
+    }
+  });
+
+  noResults.style.display = matches === 0 ? "block" : "none";
+}
+
+document.getElementById("close-ad").addEventListener("click", function (e) {
+    e.stopPropagation();
+    document.getElementById("notification-ad").style.display = "none";
+  });
+</script>
+
+</body>
+</html>
