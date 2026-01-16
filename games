@@ -192,11 +192,27 @@ input:focus {
   <div class="grid" id="grid">
 
 <div class="item" data-title="basket bros">
+      <a href="https://sites.google.com/gse.cusd80.com/titan/page_2/lol/page" target="_blank">
+        <img src="https://raw.githubusercontent.com/helloflygh/games/main/1v1lol.jpeg">
+      </a>
+      <div class="title">1v1 LOL</div>
+    </div>
+
+<div class="item" data-title="basket bros">
       <a href="https://sites.google.com/gse.cusd80.com/titan/page_2/page" target="_blank">
         <img src="https://raw.githubusercontent.com/helloflygh/games/main/basketbros.jpeg">
       </a>
       <div class="title">Basket Bros</div>
     </div>
+
+
+<div class="item" data-title="basketball legends">
+      <a href="https://sites.google.com/gse.cusd80.com/titan/page_2/basketball-legends/page" target="_blank">
+        <img src="https://raw.githubusercontent.com/helloflygh/games/main/legends.jpeg">
+      </a>
+      <div class="title">Basketball Legends</div>
+    </div>
+
 
 <div class="item" data-title="basket random">
       <a href="https://sites.google.com/gse.cusd80.com/titan/page_2/basket-random/page" target="_blank">
@@ -355,6 +371,12 @@ input:focus {
       <div class="title">Slow Roads</div>
     </div>
 
+<div class="item" data-title="soccer random">
+      <a href="https://sites.google.com/gse.cusd80.com/titan/page_2/soccer/page" target="_blank">
+        <img src="https://raw.githubusercontent.com/helloflygh/games/main/soccer.jpeg">
+      </a>
+      <div class="title">Soccer Random</div>
+    </div>
 
     <div class="item" data-title="snow rider">
       <a href="https://sites.google.com/gse.cusd80.com/titan/page_2/page_13" target="_blank">
@@ -363,7 +385,14 @@ input:focus {
       <div class="title">Snow Rider</div>
     </div>
 
- <div class="item" data-title="stickman hook">
+ <div class="item" data-title="stickman climb">
+      <a href="https://sites.google.com/gse.cusd80.com/titan/page_2/stickman-climb/page" target="_blank">
+        <img src="https://raw.githubusercontent.com/helloflygh/games/main/download%20(43).jpeg">
+      </a>
+      <div class="title">Stickman Climb</div>
+    </div>
+
+<div class="item" data-title="stickman hook">
       <a href="https://sites.google.com/gse.cusd80.com/titan/page_2/stickman-hook/page" target="_blank">
         <img src="https://raw.githubusercontent.com/helloflygh/games/main/download%20(37).jpeg">
       </a>
