@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>T!tan</title>
+    <style>
+        :root {
+            --h1: 1.1rem; --h2: 3rem;   
+            --glass-bg: rgba(255, 255, 255, 0.45); 
+            --glass-blur: blur(12px);
+            --main-text-color: #000000;
+            --sub-text-color: #000000;
+            --font-main: 'Courier New', Courier, monospace;
+            --accent-color: #4CAF50; 
+        }
+
+        * { color: #000000 !important; }
+
+        body {
+            font-family: var(--font-main);
+            margin: 0; padding: 0;
+            background-image: url('https://raw.githubusercontent.com/helloflygh/games/main/spacetitan.gif');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            text-align: center;
+            min-height: 100vh;
+            display: flex; flex-direction: column; align-items: center;
+            overflow-x: hidden;
+        }
+
+        /* --- Sidebar --- */
+        .side-panel {
+            height: 100%; width: 0;
+            position: fixed; z-index: 200;
+            top: 0; left: 0;
+            background-color: var(--glass-bg);
+            backdrop-filter: var(--glass-blur);
+            overflow-x: hidden;
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            padding-top: 60px;
+            border-right: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .menu-item {
+            padding: 15px 25px;
+            font-size: 18px; 
+            display: flex; 
+            align-items: center;   
+            transition: 0.2s; border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            cursor: pointer; white-space: nowrap;
+        }
+
+        /* Styling for the tiny images in the sidebar */
+        .menu-icon {
+            width: 20px;
+            height: 20px;
+            margin-right: 12px; /* Space between image and text */
+            object-fit: contain;
+        }
+
+        .menu-item:hover { background-color: rgba(0, 0, 0, 0.1); }
+
+        .hamburger {
+            position: fixed; top: 20px; left: 20px;
+            font-size: 30px; cursor: pointer; z-index: 100;
+            background: rgba(255,255,255,0.6);
+            padding: 5px 15px; border-radius: 8px;
+        }
+
+        .panic-btn {
+            position: fixed; top: 20px; left: 50%;
+            transform: translateX(-50%);
+            font-size: 16px; cursor: pointer; z-index: 100;
+            background: #ff4b4b;
+            padding: 10px 25px; border-radius: 8px;
+            font-weight: bold; border: none;
+            transition: 0.3s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        .panic-btn:hover { background: #d43f3f; transform: translateX(-50%) scale(1.05); }
+
+        .close-btn { 
+            position: absolute; top: 10px; right: 20px; 
+            font-size: 45px; cursor: pointer; 
+        }
+
+        .settings-container { padding: 15px 25px; text-align: left; }
+        .settings-label { font-size: 14px; display: block; margin-top: 15px; }
+        .settings-input {
+            width: 85%; padding: 8px; margin: 8px 0;
+            border-radius: 5px; border: 1px solid #000; font-family: inherit;
+            background: rgba(255,255,255,0.8);
+        }
+        .toggle-row { display: flex; align-items: center; justify-content: space-between; margin-top: 20px; }
+        .switch { position: relative; display: inline-block; width: 50px; height: 24px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider {
+            position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #ccc; transition: .4s; border-radius: 24px;
+        }
+        .slider:before {
+            position: absolute; content: ""; height: 18px; width: 18px;
+            left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%;
+        }
+        input:checked + .slider { background-color: var(--accent-color); }
+        input:checked + .slider:before { transform: translateX(26px); }
+
+        .page-content { display: none; width: 100%; align-items: center; flex-direction: column; }
+        .active-page { display: flex; }
+
+        .full-width-container {
+            width: 98vw; 
+            max-width: 1600px;
+            margin: 20px auto; padding: 20px;
+            background: var(--glass-bg);
+            backdrop-filter: var(--glass-blur);
+            border-radius: 15px;
+            box-sizing: border-box;
+        }
+
+        #settingsMenu { display: none; }
+    </style>
+</head>
+<body onload="initSite()">
+
+    <div id="hamBtn" class="hamburger" onclick="handleNav(true)">&#9776;</div>
+    <button class="panic-btn" onclick="doPanic()">PANIC</button>
+
+    <div id="navPanel" class="side-panel">
+        <span class="close-btn" onclick="handleNav(false)">&times;</span>
+        
+        <div id="mainLinks">
+            <div class="menu-item" onclick="changeContent('homePage')">
+                <img src="https://raw.githubusercontent.com/helloflygh/games/main/home-removebg-preview.png" class="menu-icon">Home
+            </div>
+            <div class="menu-item" onclick="changeContent('gamesPage')">
+                <img src="https://raw.githubusercontent.com/helloflygh/games/main/pngimg.com%20-%20gamepad_PNG58.png" class="menu-icon">Games
+            </div>
+            <div class="menu-item" onclick="toggleSettings(true)">
+                <img src="https://raw.githubusercontent.com/helloflygh/games/main/settings-icon.png" class="menu-icon">Settings
+            </div>
+        </div>
+
+        <div id="settingsMenu">
+            <div style="padding: 20px; font-weight: bold; font-size: 20px;">Settings</div>
+            <div class="menu-item" onclick="toggleSettings(false)">
+                <img src="https://raw.githubusercontent.com/helloflygh/games/main/back-removebg-preview%20(1).png" class="menu-icon">Back
+            </div>
+            
+            <div class="settings-container">
+                <label class="settings-label">Panic URL (New Tab):</label>
+                <input type="text" id="panicUrlInput" class="settings-input" placeholder="https://..." onchange="saveSettings()">
+                
+                <div class="toggle-row">
+                    <span style="font-size: 14px; font-weight: bold;">Enable Hotkey</span>
+                    <label class="switch">
+                        <input type="checkbox" id="shortcutToggle" onchange="saveSettings()">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <label class="settings-label">Hotkey: Ctrl +</label>
+                <input type="text" id="panicKeyInput" class="settings-input" style="width: 50px; text-align: center;" maxlength="1" placeholder="x" onchange="saveSettings()">
+                
+                <p style="font-size: 11px; margin-top: 25px; opacity: 0.7;">Auto-saves on change.</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="homePage" class="page-content active-page">
+        <img src="https://raw.githubusercontent.com/helloflygh/games/main/IMG_3750-removebg-preview.png" style="width: 850px; max-width: 90%; margin-top: 150px;">
+        <div style="max-width: 600px; padding: 20px; background: var(--glass-bg); backdrop-filter: var(--glass-blur); border-radius: 15px;">
+            <h2>Version 3.0</h2>
+            <h1>Whats new?</h1>
+            <p> In the most recent update we added NEW UI, a NEW AND IMPROVED panic button, which is fully customizable in settings. (works best in fullscreen mode) We also added a customizable panic shortcut (CTRL + X) </p>
+
+            <h1>What is T!tan?</h1>
+            <p> Ever since n3bula went down, i have set out to make project t!tan, to bring back game websites for everyone.</p>
+
+
+            <h1>R.I.P. S4turn</h1>
+            <p> The district blocked s4turn, leaving the owner without access to his site. S4turn is currently redeveloping its UI, and when it is finished, the link will be put here.</p>
+        </div>
+    </div>
+
+    <div id="gamesPage" class="page-content">
+        <div class="full-width-container"> <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>game list</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+:root {
+  --bg: #ffffff;
+  --card: #ffffff;
+  --accent: #ffffff;
+  --text: #000000;
+  --muted: #d3d3d3;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "Segoe UI", sans-serif;
+  background-image: url('https://raw.githubusercontent.com/helloflygh/games/main/spacetitan.gif');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* --- IFRAME OVERLAY STYLES --- */
+#game-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.95);
+  z-index: 20000;
+}
+
+#game-overlay iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+#close-overlay {
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  font-size: 50px;
+  color: white;
+  cursor: pointer;
+  z-index: 20001;
+  line-height: 1;
+  transition: 0.3s;
+}
+
+#close-overlay:hover {
+  color: #ff4d4d;
+  transform: scale(1.1);
+}
+
+#loading {
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle, #1a1f3c, #0f1220);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.loader-box {
+  text-align: center;
+  animation: fadeIn 1s ease;
+}
+
+.loader-box img {
+  width: 90px;
+  height: 90px;
+  margin-bottom: 15px;
+}
+
+.quote {
+  font-style: italic;
+  color: var(--muted);
+  max-width: 300px;
+  margin: auto;
+}
+
+#app {
+  display: none;
+  padding: 30px;
+  animation: fadeIn 0.8s ease;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 20px;
+  letter-spacing: 1px;
+}
+
+input {
+  width: 100%;
+  max-width: 500px;
+  display: block;
+  margin: 0 auto 30px;
+  padding: 14px 16px;
+  border-radius: 30px;
+  border: none;
+  outline: none;
+  font-size: 16px;
+  background: var(--card);
+  color: #000000;
+  transition: 0.3s;
+}
+
+input:focus {
+  box-shadow: 0 0 0 2px var(--accent);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 25px;
+}
+
+.item {
+  background: var(--card);
+  border-radius: 14px;
+  overflow: hidden;
+  transition: transform 0.3s, box-shadow 0.3s;
+  cursor: pointer;
+}
+
+.item:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 15px 30px rgba(0,0,0,0.4);
+}
+
+.item img {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+}
+
+.title {
+  padding: 12px;
+  text-align: center;
+  font-weight: bold;
+}
+
+#no-results {
+  display: none;
+  grid-column: 1 / -1;
+  text-align: center;
+  margin-top: 50px;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+#req-btn {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: var(--card);
+  color: #000000;
+  text-decoration: none;
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-weight: 600;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.4);
+  transition: 0.3s;
+  z-index: 10000;
+}
+
+#req-btn:hover {
+  background: var(--muted);
+  transform: translateY(-2px);
+}
+
+</style>
+</head>
+
+<body>
+
+<div id="game-overlay">
+  <span id="close-overlay" onclick="closeGame()">&times;</span>
+  <iframe id="game-iframe" src=""></iframe>
+</div>
+
+<div id="loading">
+  <div class="loader-box">
+    <img src="https://raw.githubusercontent.com/helloflygh/games/main/copy_FB56A650-849E-4848-89AF-50C81A971AE7.gif">
+    <div class="quote" id="quote"></div>
+  </div>
+</div>
+
+<div id="app">
+  <h1><img src="https://raw.githubusercontent.com/helloflygh/games/main/Screenshot_2026-01-04_2.25.00_PM-removebg-preview.png"></h1>
+
+  <input type="text" placeholder="Search Games..." id="search" onkeyup="filterImages()">
+
+  <div class="grid" id="grid">
+
+    <div class="item" data-title="1v1 LOL" onclick="openGame('https://sites.google.com/gse.cusd80.com/titan/page_2/lol/page')">
+      <img src="https://raw.githubusercontent.com/helloflygh/games/main/1v1lol.jpeg">
+      <div class="title">1v1 LOL</div>
+    </div>
+
+    <div class="item" data-title="basket bros" onclick="openGame('https://sites.google.com/gse.cusd80.com/titan/page_2/page')">
+      <img src="https://raw.githubusercontent.com/helloflygh/games/main/basketbros.jpeg">
+      <div class="title">Basket Bros</div>
+    </div>
+
+    <div class="item" data-title="basketball legends" onclick="openGame('https://sites.google.com/gse.cusd80.com/titan/page_2/basketball-legends/page')">
+      <img src="https://raw.githubusercontent.com/helloflygh/games/main/legends.jpeg">
+      <div class="title">Basketball Legends</div>
+    </div>
+
+    <div class="item" data-title="basket random" onclick="openGame('https://sites.google.com/gse.cusd80.com/titan/page_2/basket-random/page')">
+      <img src="https://raw.githubusercontent.com/helloflygh/games/main/download%20(41).jpeg">
+      <div class="title">Basket Random</div>
+    </div>
+
+    <div class="item" data-title="bacon may dye" onclick="openGame('https://sites.google.com/gse.cusd80.com/titan/page_2/bacon-may-fly')">
+      <img src="https://raw.githubusercontent.com/helloflygh/games/main/bacon.jpeg">
+      <div class="title">Bacon May Dye</div>
+    </div>
+
+    <div class="item" data-title="bacon may dye beta" onclick="openGame('https://sites.google.com/gse.cusd80.com/titan/page_2/bacon-may-fly-beta/page')">
+      <img src="https://raw.githubusercontent.com/helloflygh/games/main/bacon.webp">
+      <div class="title">Bacon May Dye (BETA)</div>
+    </div>
+
+    <div class="item" data-title="bitlife" onclick="openGame('https://sites.google.com/gse.cusd80.com/titan/page_2/new-games/page')">
+      <img src="https://raw.githubusercontent.com/helloflygh/games/main/download%20(36).jpeg">
+      <div class="title">Bitlife</div>
+    </div>
+
+    <div class="item" data-title="crazy cattle 3d" onclick="openGame('https://sites.google.com/gse.cusd80.com/titan/page_2/page_9')">
+      <img src="https://raw.githubusercontent.com/helloflygh/games/main/crazycattle.jpeg">
+      <div class="title">Crazy Cattle 3D</div>
+    </div>
+
+    <div class="item" data-title="drift boss" onclick="openGame('https://sites.google.com/gse.cusd80.com/titan/page_2/page_12')">
+      <img src="https://raw.githubusercontent.com/helloflygh/games/main/Screenshot%202025-12-28%204.27.46%20PM.png">
+      <div class="title">Drift Boss</div>
+    </div>
+
+    <div class="item" data-title="drive mad" onclick="openGame('https://sites.google.com/gse.cusd80.com/titan/page_2/page_6')">
+      <img src="https://raw.githubusercontent.com/helloflygh/games/main/download%20(35).jpeg">
+      <div class="title">Drive Mad</div>
+    </div>
+
+    <div class="item" data-title="Escape Road" onclick="openGame('https://sites.google.com/gse.cusd80.com/titan/page_2/escape-road/page')">
+      <img src="https://raw.githubusercontent.com/helloflygh/games/main/escape.jpeg">
+      <div class="title">Escape Road</div>
+    </div>
+
+    <div class="item" data-title="Escape Road 2" onclick="openGame('https://sites.google.com/gse.cusd80.com/titan/page_2/escape-road-2/page')">
+      <img src="https://raw.githubusercontent.com/helloflygh/games/main/download%20(39).jpeg">
+      <div class="title">Escape Road 2</div>
+    </div>
+
+    <div class="item" data-title="fastkat" onclick="openGame('https://sites.google.com/gse.cusd80.com/titan/page_2/page_4')">
+      <img src="https://raw.githubusercontent.com/helloflygh/games/main/unnamed.jpg">
+      <div class="title">FastKat</div>
+    </div>
+
+    <div class="item" data-title="fnaf 1" onclick="openGame('https://sites.google.com/gse.cusd80.com/titan/page_2/page_2')">
+      <img src="https://raw.githubusercontent.com/helloflygh/games/main/Screenshot%202025-12-26%2010.22.26%20AM.png">
+      <div class="title">FNaF 1</div>
+    </div>
+
+    <div class="item" data-title="fnaf 2" onclick="openGame('https://sites.google.com/gse.cusd80.com/titan/page_2/page_3')">
+      <img src="https://raw.githubusercontent.com/helloflygh/games/main/Screenshot%202025-12-26%2010.22.42%20AM.png">
+      <div class="title">FNaF 2</div>
+    </div>
+
+    <div class="item" data-title="fnaf 3" onclick="openGame('https://sites.google.com/gse.cusd80.com/titan/page_2/FNaF-3/page')">
+      <img src="https://raw.githubusercontent.com/helloflygh/games/main/download%20(38).jpeg">
+      <div class="title">FNaF 3</div>
+    </div>
+
+    <div class="item" data-title="fnaf 4" onclick="openGame('https://sites.google.com/gse.cusd80.com/titan/page_2/FNaF-4/page')">
+      <img src="https://raw.githubusercontent.com/helloflygh/games/main/fnaf4.jpeg">
+      <div class="title">FNaF 4</div>
+    </div>
+
+    <div class="item" data-title="geometry dash" onclick="openGame('https://sites.google.com/gse.cusd80.com/titan/page_2/page_8')">
+      <img src="https://raw.githubusercontent.com/helloflygh/games/main/geometrydash.jpeg">
+      <div class="title">Geometry Dash</div>
+    </div>
+
+    <div class="item" data-title="happy wheels" onclick="openGame('https://sites.google.com/gse.cusd80.com/titan/page_2/happy-wheels/page')">
+      <img src="https://raw.githubusercontent.com/helloflygh/games/main/download%20(40).jpeg">
+      <div class="title">Happy Wheels</div>
+    </div>
+
+    <div class="item" data-title="level devil" onclick="openGame('https://sites.google.com/gse.cusd80.com/titan/page_2/level-devil/page')">
+      <img src="https://raw.githubusercontent.com/helloflygh/games/main/levil.jpeg">
+      <div class="title">Level Devil</div>
+    </div>
+
+    <div class="item" data-title="monkey mart" onclick="openGame('https://sites.google.com/gse.cusd80.com/titan/page_2/monkey-mart/page')">
+      <img src="https://raw.githubusercontent.com/helloflygh/games/main/download%20(42).jpeg">
+      <div class="title">Monkey Mart</div>
+    </div>
+
+    <div class="item" data-title="plants vs zombies" onclick="openGame('https://sites.google.com/gse.cusd80.com/titan/page_2/plants/page')">
+      <img src="https://raw.githubusercontent.com/helloflygh/games/main/plants.jpeg">
+      <div class="title">Plants vs Zombies</div>
+    </div>
+
+    <div class="item" data-title="retro bowl" onclick="openGame('https://sites.google.com/gse.cusd80.com/titan/page_2/page_1')">
+      <img src="https://raw.githubusercontent.com/helloflygh/games/main/unnamed.png">
+      <div class="title">Retro Bowl</div>
+    </div>
+
+    <div class="item" data-title="slope" onclick="openGame('https://sites.google.com/gse.cusd80.com/titan/page_2/page_7')">
+      <img src="https://raw.githubusercontent.com/helloflygh/games/main/download%20(4).png">
+      <div class="title">Slope</div>
+    </div>
+
+    <div class="item" data-title="slow roads" onclick="openGame('https://sites.google.com/gse.cusd80.com/titan/page_2/slow-roads/page')">
+      <img src="https://raw.githubusercontent.com/helloflygh/games/main/slow.jpeg">
+      <div class="title">Slow Roads</div>
+    </div>
+
+    <div class="item" data-title="soccer random" onclick="openGame('https://sites.google.com/gse.cusd80.com/titan/page_2/soccer/page')">
+      <img src="https://raw.githubusercontent.com/helloflygh/games/main/soccer.jpeg">
+      <div class="title">Soccer Random</div>
+    </div>
+
+    <div class="item" data-title="snow rider" onclick="openGame('https://sites.google.com/gse.cusd80.com/titan/page_2/page_13')">
+      <img src="https://raw.githubusercontent.com/helloflygh/games/main/SnowRIder.png">
+      <div class="title">Snow Rider</div>
+    </div>
+
+    <div class="item" data-title="stickman climb" onclick="openGame('https://sites.google.com/gse.cusd80.com/titan/page_2/stickman-climb/page')">
+      <img src="https://raw.githubusercontent.com/helloflygh/games/main/download%20(43).jpeg">
+      <div class="title">Stickman Climb</div>
+    </div>
+
+    <div class="item" data-title="stickman hook" onclick="openGame('https://sites.google.com/gse.cusd80.com/titan/page_2/stickman-hook/page')">
+      <img src="https://raw.githubusercontent.com/helloflygh/games/main/download%20(37).jpeg">
+      <div class="title">Stickman Hook</div>
+    </div>
+
+    <div class="item" data-title="temple run 2" onclick="openGame('https://sites.google.com/gse.cusd80.com/titan/page_2/page_11')">
+      <img src="https://raw.githubusercontent.com/helloflygh/games/main/Screenshot%202025-12-28%204.02.24%20PM.png">
+      <div class="title">Temple Run 2</div>
+    </div>
+
+    <div id="no-results">
+      <img src="https://raw.githubusercontent.com/helloflygh/games/main/copy_FB56A650-849E-4848-89AF-50C81A971AE7.gif" width="90">
+      <div class="quote">No results.</div>
+    </div>
+
+  </div>
+</div>
+
+<a href="https://sites.google.com/gse.cusd80.com/titan/page_3/game-requests" id="req-btn">📃 Request</a>
+
+<script>
+const quotes = [
+  "Who actually reads these?",
+  "T!tan is so cool - so is s4turn.",
+  "Mateooooooooooooooooooooooooo",
+  "these games are so tuff!",
+  "rip n3bula.",
+  "is n3bula up yet?",
+  "TYSM S4turn <3",
+  "is this update even good ",
+  "I spent hours on this update",
+  "loading...",
+  "im the only one still with nexora? - s4turn. Yes - T!tan.",
+  "loading games..."
+];
+
+document.getElementById("quote").textContent =
+  quotes[Math.floor(Math.random() * quotes.length)];
+
+setTimeout(() => {
+  document.getElementById("loading").style.display = "none";
+  document.getElementById("app").style.display = "block";
+}, 2300);
+
+// NEW FUNCTIONS FOR IFRAME
+function openGame(url) {
+  const overlay = document.getElementById("game-overlay");
+  const iframe = document.getElementById("game-iframe");
+  iframe.src = url; // Set the URL
+  overlay.style.display = "block"; // Show the overlay
+  document.body.style.overflow = "hidden"; // Prevent background scrolling
+}
+
+function closeGame() {
+  const overlay = document.getElementById("game-overlay");
+  const iframe = document.getElementById("game-iframe");
+  iframe.src = ""; // Clear URL to stop game audio/loading
+  overlay.style.display = "none"; // Hide the overlay
+  document.body.style.overflow = "auto"; // Re-enable background scrolling
+}
+
+function filterImages() {
+  const q = document.getElementById("search").value.toLowerCase();
+  const items = document.querySelectorAll(".item");
+  const noResults = document.getElementById("no-results");
+  let matches = 0;
+
+  items.forEach(item => {
+    const title = item.dataset.title.toLowerCase();
+    if (title.includes(q)) {
+      item.style.display = "block";
+      matches++;
+    } else {
+      item.style.display = "none";
+    }
+  });
+
+  noResults.style.display = matches === 0 ? "block" : "none";
+}
+</script>
+
+</body>
+</html>
+           
+        </div>
+    </div>
+
+    <script>
+        const panel = document.getElementById("navPanel");
+        const ham = document.getElementById("hamBtn");
+        const mainLinks = document.getElementById("mainLinks");
+        const settingsMenu = document.getElementById("settingsMenu");
+        
+        const panicInput = document.getElementById("panicUrlInput");
+        const shortcutToggle = document.getElementById("shortcutToggle");
+        const panicKeyInput = document.getElementById("panicKeyInput");
+
+        function initSite() {
+            if (sessionStorage.getItem('sidebarOpen') === 'true') handleNav(true);
+            if (localStorage.getItem('panicShortcutEnabled') === null) {
+                localStorage.setItem('panicShortcutEnabled', 'true');
+            }
+            panicInput.value = localStorage.getItem('panicLink') || 'https://classroom.google.com';
+            shortcutToggle.checked = localStorage.getItem('panicShortcutEnabled') === 'true';
+            panicKeyInput.value = localStorage.getItem('panicKey') || 'x';
+        }
+
+        function doPanic() {
+            let url = panicInput.value.trim() || 'https://classroom.google.com';
+            if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                url = 'https://' + url;
+            }
+            window.open(url, '_blank');
+        }
+
+        function saveSettings() {
+            localStorage.setItem('panicLink', panicInput.value);
+            localStorage.setItem('panicShortcutEnabled', shortcutToggle.checked);
+            localStorage.setItem('panicKey', panicKeyInput.value.toLowerCase());
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+            const targetKey = (panicKeyInput.value || 'x').toLowerCase();
+            if (shortcutToggle.checked && e.ctrlKey && e.key.toLowerCase() === targetKey) {
+                e.preventDefault();
+                doPanic();
+            }
+        });
+
+        function handleNav(isOpen) {
+            if (isOpen) {
+                const isSettings = settingsMenu.style.display === "block";
+                panel.style.width = isSettings ? "350px" : "250px";
+                ham.style.display = "none";
+                sessionStorage.setItem('sidebarOpen', 'true');
+            } else {
+                panel.style.width = "0";
+                ham.style.display = "block";
+                sessionStorage.setItem('sidebarOpen', 'false');
+                setTimeout(() => {
+                    mainLinks.style.display = "block";
+                    settingsMenu.style.display = "none";
+                }, 400);
+            }
+        }
+
+        function toggleSettings(isSettings) {
+            if (isSettings) {
+                panel.style.width = "350px";
+                mainLinks.style.display = "none";
+                settingsMenu.style.display = "block";
+            } else {
+                if (panel.style.width !== "0" && panel.style.width !== "0px") {
+                    panel.style.width = "250px";
+                }
+                mainLinks.style.display = "block";
+                settingsMenu.style.display = "none";
+            }
+        }
+
+        function changeContent(pageId) {
+            const pages = document.getElementsByClassName('page-content');
+            for (let p of pages) p.classList.remove('active-page');
+            document.getElementById(pageId).classList.add('active-page');
+            handleNav(false); 
+        }
+    </script>
+</body>
+</html>
